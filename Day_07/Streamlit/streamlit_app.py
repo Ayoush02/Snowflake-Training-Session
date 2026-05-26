@@ -1,7 +1,6 @@
 # ######################################################################
 # SNOWFLAKE ECOMMERCE ANALYTICS — STREAMLIT APP (in Snowflake)
 # Database : ECOM_DB  |  Schema : RAW
-# Author   : Trainer Demo
 # ######################################################################
 
 import streamlit as st
