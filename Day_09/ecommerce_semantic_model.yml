@@ -1,0 +1,69 @@
+name: ecommerce_sales_model
+description: E-commerce sales semantic model for natural language querying
+
+tables:
+  - name: ECOMMERCE_ORDERS
+    description: Main orders table with customer and product details
+
+    base_table:
+      database: CORTEX_TRAINING_DB
+      schema: ECOMMERCE
+      table: ECOMMERCE_ORDERS
+
+    dimensions:
+      - name: product_category
+        description: Category of the product
+        expr: PRODUCT_CATEGORY
+        data_type: TEXT
+
+      - name: city
+        description: Customer city
+        expr: CITY
+        data_type: TEXT
+
+      - name: region
+        description: Geographic region
+        expr: REGION
+        data_type: TEXT
+
+      - name: customer_segment
+        description: Customer segment (New/Regular/Premium/VIP)
+        expr: CUSTOMER_SEGMENT
+        data_type: TEXT
+
+      - name: shipping_status
+        description: Delivery status of order
+        expr: SHIPPING_STATUS
+        data_type: TEXT
+
+      - name: sales_channel
+        description: Channel through which order was placed
+        expr: SALES_CHANNEL
+        data_type: TEXT
+
+    time_dimensions:
+      - name: order_date
+        description: Date when order was placed
+        expr: ORDER_DATE
+        data_type: DATE
+
+    measures:
+      - name: total_revenue
+        description: Total order amount including GST
+        expr: SUM(TOTAL_AMOUNT)
+        data_type: NUMBER
+
+      - name: order_count
+        description: Number of orders
+        expr: COUNT(DISTINCT ORDER_ID)
+        data_type: NUMBER
+
+      - name: avg_order_value
+        description: Average order value
+        expr: AVG(TOTAL_AMOUNT)
+        data_type: NUMBER
+
+      - name: avg_rating
+        description: Average customer review rating
+        expr: AVG(REVIEW_RATING)
+        data_type: NUMBER
