@@ -1,3 +1,5 @@
+# Data Quality Pipeline Orchestrator for Snowflake stage file ingestion
+# Co-authored with CoCo
 # ============================================================
 # main.py  —  Data Quality Pipeline Orchestrator
 # ============================================================
@@ -7,7 +9,8 @@ import traceback
 from datetime import datetime, date
 from dataclasses import dataclass, field
 from typing import List, Optional
-
+from snowflake.snowpark import Session
+from snowflake.snowpark.context import get_active_session
 
 # ── DQResult dataclass ─────────────────────────────────────────────────────
 @dataclass
@@ -631,13 +634,12 @@ def copy_into_raw(session, cfg, stage, fmt, file_name, run_id) -> int:
 
 # ══════════════════════════════════════════════════════════════════════════════
 # MAIN ENTRY POINT
-# Snowflake Python Worksheet auto-injects `session` — do NOT define your own.
 # ══════════════════════════════════════════════════════════════════════════════
 def main(session):
 
     # Set session context explicitly — avoids unresolved object name errors
-    session.sql('USE DATABASE ANALYTICS_DB').collect()
-    session.sql('USE SCHEMA ANALYTICS_DB.RAW').collect()
+    session.use_database("ANALYTICS_DB")
+    session.use_schema("RAW")
 
     cfg       = CFG
     run_id    = str(uuid.uuid4())
@@ -672,7 +674,7 @@ def main(session):
     for f in files:
         file_name = f['name']
         file_size = f['size']
-        print(f'  {"─" * 60}')
+        print("-" * 60)
         print(f'  Processing: {file_name}  ({file_size:,} bytes)')
 
         all_results   : List[DQResult] = []
@@ -752,7 +754,7 @@ def main(session):
             move_file(session, stage, file_name, 'processed')
             summary['passed']      += 1
             summary['rows_loaded'] += rows_loaded
-            print(f'    STATUS: ✅ PASSED  |  {rows_loaded:,} rows loaded into RAW.TRANSACTION')
+            print(f'    STATUS: PASSED  |  {rows_loaded:,} rows loaded into RAW.TRANSACTION')
 
         except StopIteration as rejection_msg:
             # ── DQ CHECK FAILURE: log, notify, quarantine ────────────────
@@ -774,11 +776,10 @@ def main(session):
                 print(f'    [LOG ERROR] Could not write audit log: {log_err}')
             move_file(session, stage, file_name, 'quarantine')
             summary['rejected'] += 1
-            print(f'    STATUS: ❌ REJECTED  |  {rejection_msg}')
+            print(f'    STATUS: REJECTED  |  {rejection_msg}')
 
         except Exception as unexpected:
             # ── UNEXPECTED CODE / SQL ERROR ──────────────────────────────
-            # Print full traceback so you can diagnose in Python Worksheet output
             print(f'    [UNEXPECTED ERROR] {file_name}')
             print(f'    {type(unexpected).__name__}: {unexpected}')
             print('    Full traceback:')
@@ -800,8 +801,8 @@ def main(session):
     print(f'  PIPELINE RUN COMPLETE')
     print(f'  Run ID      : {run_id}')
     print(f'  Total Files : {summary["total"]}')
-    print(f'  ✅ Passed   : {summary["passed"]}')
-    print(f'  ❌ Rejected : {summary["rejected"]}')
+    print(f'  Passed      : {summary["passed"]}')
+    print(f'  Rejected    : {summary["rejected"]}')
     print(f'  Rows Loaded : {summary["rows_loaded"]:,}')
     print('=' * 65)
     print()
@@ -813,3 +814,7 @@ def main(session):
           summary['rejected'], summary['rows_loaded']]],
         schema=['RUN_ID', 'TOTAL_FILES', 'PASSED', 'REJECTED', 'ROWS_LOADED'],
     )
+
+session = get_active_session()
+result = main(session)
+result.show()
