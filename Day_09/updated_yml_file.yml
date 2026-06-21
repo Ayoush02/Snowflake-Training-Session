@@ -1,0 +1,273 @@
+name: ECOMMERCE_ORDERS_CORTEX
+tables:
+  - name: ECOMMERCE_ORDERS
+    description: The table contains records of ecommerce orders placed by customers. Each record represents a single order and includes details about the customer demographics, geographic location, product information, and sales channel. Financial details such as pricing, quantity, discounts, and gross order value are also captured alongside order and delivery dates.
+    base_table:
+      database: CORTEX_TRAINING_DB
+      schema: ECOMMERCE
+      table: ECOMMERCE_ORDERS
+    dimensions:
+      - name: AGE_GROUP
+        description: The age group category of the customer associated with the order (e.g., "18-24", "25-34").
+        expr: AGE_GROUP
+        data_type: VARCHAR(20)
+        sample_values:
+          - 36-45
+          - 26-35
+          - 18-25
+      - name: CITY
+        description: The city associated with the order's shipping or billing address.
+        expr: CITY
+        data_type: VARCHAR(100)
+        sample_values:
+          - Guwahati
+          - Chennai
+          - Mumbai
+      - name: CUSTOMER_ID
+        description: Unique identifier assigned to each customer.
+        expr: CUSTOMER_ID
+        data_type: VARCHAR(20)
+        sample_values:
+          - CUST00164
+          - CUST00003
+          - CUST00004
+      - name: CUSTOMER_NAME
+        description: The full name of the customer who placed the order.
+        expr: CUSTOMER_NAME
+        data_type: VARCHAR(100)
+        sample_values:
+          - Manish Pandey
+          - Suresh Agarwal
+          - Deepak Ghosh
+      - name: CUSTOMER_SEGMENT
+        description: The market segment or category to which the customer belongs (e.g., consumer, corporate, or enterprise).
+        expr: CUSTOMER_SEGMENT
+        data_type: VARCHAR(50)
+        sample_values:
+          - Regular
+          - New
+          - VIP
+      - name: FEEDBACK_SENTIMENT
+        description: The sentiment classification of customer feedback (e.g., positive, negative, or neutral) associated with an order.
+        expr: FEEDBACK_SENTIMENT
+        data_type: VARCHAR(30)
+        sample_values:
+          - Negative
+          - Neutral
+          - Positive
+      - name: GENDER
+        description: The gender of the customer associated with the order.
+        expr: GENDER
+        data_type: VARCHAR(20)
+        sample_values:
+          - Female
+          - Male
+          - Other
+      - name: IS_WEEKDAY
+        description: Indicates whether the order was placed on a weekday (1) or not (0).
+        expr: IS_WEEKDAY
+        data_type: NUMBER(1,0)
+        sample_values:
+          - '1'
+          - '0'
+      - name: MONTH_NAME
+        description: The name of the month in which the order was placed.
+        expr: MONTH_NAME
+        data_type: VARCHAR(20)
+        sample_values:
+          - June
+          - May
+          - September
+      - name: ORDER_ID
+        description: Unique identifier for each order.
+        expr: ORDER_ID
+        data_type: VARCHAR(20)
+        sample_values:
+          - ORD000089
+          - ORD000094
+          - ORD000114
+      - name: ORDER_MONTH
+        description: The month of the year (1–12) in which the order was placed.
+        expr: ORDER_MONTH
+        data_type: NUMBER(2,0)
+        sample_values:
+          - '11'
+          - '7'
+          - '5'
+      - name: ORDER_YEAR
+        description: The year in which the order was placed.
+        expr: ORDER_YEAR
+        data_type: NUMBER(4,0)
+        sample_values:
+          - '2024'
+          - '2023'
+          - '2022'
+      - name: PAYMENT_METHOD
+        description: The method of payment used to complete the order (e.g., credit card, PayPal, bank transfer).
+        expr: PAYMENT_METHOD
+        data_type: VARCHAR(100)
+        sample_values:
+          - Debit Card
+          - Cash on Delivery
+          - Net Banking
+      - name: PRODUCT_CATEGORY
+        description: The category of the product associated with the order.
+        expr: PRODUCT_CATEGORY
+        data_type: VARCHAR(100)
+        sample_values:
+          - Beauty
+          - Home
+          - Electronics
+      - name: PRODUCT_ID
+        description: Unique identifier for a product associated with an order.
+        expr: PRODUCT_ID
+        data_type: VARCHAR(20)
+        sample_values:
+          - PROD1028
+          - PROD1005
+          - PROD1008
+      - name: PRODUCT_NAME
+        description: The name of the product included in the order.
+        expr: PRODUCT_NAME
+        data_type: VARCHAR(200)
+        sample_values:
+          - Dumbbells Set
+          - Mattress
+          - Lipstick
+      - name: QUANTITY
+        description: The number of units ordered for a given product in an order.
+        expr: QUANTITY
+        data_type: NUMBER(5,0)
+        sample_values:
+          - '4'
+          - '1'
+          - '3'
+      - name: REGION
+        description: The geographic region where the order was placed or delivered.
+        expr: REGION
+        data_type: VARCHAR(50)
+        sample_values:
+          - North
+          - East
+          - West
+      - name: REVIEW_RATING
+        description: The numerical rating given by a customer in their review of an order, typically on a small scale (e.g., 1–5 or 1–10).
+        expr: REVIEW_RATING
+        data_type: NUMBER(2,0)
+        sample_values:
+          - '3'
+          - '5'
+          - '1'
+      - name: SALES_CHANNEL
+        description: The sales channel through which the order was placed (e.g., online, in-store, marketplace).
+        expr: SALES_CHANNEL
+        data_type: VARCHAR(100)
+        sample_values:
+          - Partner Site
+          - Mobile App
+          - Website
+      - name: SHIPPING_STATUS
+        description: The current shipping status of an order (e.g., pending, shipped, delivered).
+        expr: SHIPPING_STATUS
+        data_type: VARCHAR(50)
+        sample_values:
+          - Pending
+          - Returned
+          - In Transit
+      - name: STATE
+        description: The state or region associated with the order's shipping or billing address.
+        expr: STATE
+        data_type: VARCHAR(100)
+        sample_values:
+          - Assam
+          - Maharashtra
+          - Uttar Pradesh
+    time_dimensions:
+      - name: DELIVERY_DATE
+        description: The date on which the order was delivered.
+        expr: DELIVERY_DATE
+        data_type: DATE
+        sample_values:
+          - '2022-12-24'
+          - '2022-05-23'
+      - name: ORDER_DATE
+        description: The date on which the order was placed.
+        expr: ORDER_DATE
+        data_type: DATE
+        sample_values:
+          - '2024-08-10'
+          - '2023-08-24'
+          - '2024-06-11'
+    facts:
+      - name: DISCOUNT_AMOUNT
+        description: The monetary amount discounted from the order total.
+        expr: DISCOUNT_AMOUNT
+        data_type: NUMBER(12,2)
+        access_modifier: public_access
+        sample_values:
+          - '43579.86'
+          - '424.22'
+          - '317.54'
+      - name: DISCOUNT_PCT
+        description: The discount percentage applied to an order.
+        expr: DISCOUNT_PCT
+        data_type: NUMBER(5,2)
+        access_modifier: public_access
+        sample_values:
+          - '10.00'
+          - '0.00'
+          - '25.00'
+      - name: GROSS_AMOUNT
+        description: The total gross monetary amount for the order before any deductions such as taxes or discounts.
+        expr: GROSS_AMOUNT
+        data_type: NUMBER(12,2)
+        access_modifier: public_access
+        sample_values:
+          - '273.10'
+          - '56405.44'
+          - '69829.68'
+      - name: GST_AMOUNT
+        description: The amount of Goods and Services Tax (GST) applied to the order, expressed as a monetary value.
+        expr: GST_AMOUNT
+        data_type: NUMBER(12,2)
+        access_modifier: public_access
+        sample_values:
+          - '3543.22'
+          - '5676.95'
+          - '378.64'
+      - name: GST_RATE
+        description: The Goods and Services Tax (GST) rate applied to the order, stored as a percentage value.
+        expr: GST_RATE
+        data_type: NUMBER(5,2)
+        access_modifier: public_access
+        sample_values:
+          - '5.00'
+          - '12.00'
+          - '18.00'
+      - name: NET_AMOUNT
+        description: The net monetary amount for the order after applicable discounts or deductions.
+        expr: NET_AMOUNT
+        data_type: NUMBER(12,2)
+        access_modifier: public_access
+        sample_values:
+          - '259.45'
+          - '56405.44'
+          - '1026.84'
+      - name: TOTAL_AMOUNT
+        description: The total monetary amount for the order, including all items and applicable charges.
+        expr: TOTAL_AMOUNT
+        data_type: NUMBER(12,2)
+        access_modifier: public_access
+        sample_values:
+          - '74407.53'
+          - '693.81'
+          - '176907.65'
+      - name: UNIT_PRICE
+        description: The price of a single unit of the ordered product.
+        expr: UNIT_PRICE
+        data_type: NUMBER(12,2)
+        access_modifier: public_access
+        sample_values:
+          - '14101.36'
+          - '1204.83'
+          - '130.27'
